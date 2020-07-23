@@ -1,0 +1,10 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: auto;
+  padding: 2rem;
+}
+
+.client-list { display: inline-block; width: 30%; }
+.messages { display: inline-block; width: 69%; }
+
+h1, h2, h3, h4, h5, h6 { font-family: 'Rokkitt', serif; }
