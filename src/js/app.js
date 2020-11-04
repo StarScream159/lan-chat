@@ -1,9 +1,29 @@
 'use strict';
+
+/*
+
+app starts
+1. open port and store value
+2. scan ports to see if there is anyone with the banner "lanchat"
+3. reply to any that respond saying that we are now online and our port number
+4. store reply as a client that is connectable
+
+ongoing every 5 minutes
+1. ping clients in list to see if they are still online
+
+app closed
+1. send going offline message to all clients in list
+
+*/
+
 const appSettings  = require('electron-settings');
 
 var os = require("os");
 var net = require('net');
 var evilscan = require('evilscan');
+
+let localHost = {'id': '', 'hostname': '', 'ip': '', 'hostnameShort': ''};
+const ContactList = new contactList();
 
 function getLocalIP() {
 	var ifaces = os.networkInterfaces();
@@ -38,16 +58,34 @@ function getLocalCIDR() {
 	return ipParts.join('.') + '/24';
 }
 
+function setLocalHost() {
+	localHost.hostname = os.hostname();
+	localHost.ip = getLocalIP();
+	localHost.hostnameShort = os.hostname().substring(0,2);
+
+	$(".localHost-hostname").text(localHost.hostname);
+	$(".localHost-ip").text(localHost.ip);
+	$(".localHost-hostnameShort > span").text(localHost.hostnameShort);
+}
+setLocalHost();
+
 function findOtherClients() {
 	console.log('scanning ' + getLocalCIDR());
 	var options = {
 		target: getLocalCIDR(),
-		port: '27948',
+		port: '27948', // 0-65535 but 27948 default
 		status:'O', // (T)imeout, (R)efused, (O)pen, (U)nreachable
-		banner:true,
+		banner: true,
 		concurrency: 1000,
 		timeout: 1000
 	};
+
+	if (appSettings.has('chat.Scanner')) {
+		options.port = appSettings.get('chat.Settings').port;
+		options.concurrency = appSettings.get('chat.Scanner').concurrency;
+		options.timeout = appSettings.get('chat.Scanner').timeout;
+	}
+
 	var scanner = new evilscan(options);
 	scanner.on('result',function(data) {
 		if (data.ip != getLocalIP()) {
@@ -55,14 +93,14 @@ function findOtherClients() {
 			if (banner != '') {
 				var banner = banner.split(";");
 				if (banner[0] == 'lan-chat') {
-					console.log('found chat at ' + banner[2] + '@' + data.port);
+					//console.log('found chat at ' + banner[2] + ':' + data.port);
 					var client = {
 						ip: data.ip,
 						port: data.port,
 						host: banner[2],
 						version: banner[1]
 					}
-					clientList.push(client);
+					ContactList.addContact(client);
 				}
 			}
 		}
@@ -71,18 +109,25 @@ function findOtherClients() {
 		throw new Error(data.toString());
 	});
 	scanner.on('done',function() {
-		console.log('scanner done');
+		console.log('scanning finished');
+		// scanner is done		
 	});
 	scanner.run();
 }
 findOtherClients();
 
-
 function openServer() {
-	var HOST = '0.0.0.0';
-	var PORT = 27948;
+	var options = {
+		host: '0.0.0.0',
+		port: 27948, // 27948
+	};
+
+	if (appSettings.has('chat.Settings')) {
+		options.host = appSettings.get('chat.Settings').host;
+		options.port = appSettings.get('chat.Settings').port;
+	}
 	
-	net.createServer(function(sock) {
+	var srv = net.createServer(function(sock) {
 		sock.write(require('electron').remote.app.getName()+';'+require('electron').remote.app.getVersion()+';'+os.hostname());
 		// We have a connection - a socket object is assigned to the connection automatically
 		console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);
@@ -92,6 +137,7 @@ function openServer() {
 			console.log('DATA ' + sock.remoteAddress + ': ' + data);
 			// Write the data back to the socket, the client will receive it as data from the server
 			sock.write('You said "' + data + '"');
+			$('.messages').append('<p>' + data + '</p>');
 		});
 
 		// Add a 'close' event handler to this instance of socket
@@ -99,7 +145,9 @@ function openServer() {
 			console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
 		});
 	
-	}).listen(PORT, HOST);
-	console.log('Server listening on ' + HOST +':'+ PORT);
+	});
+	srv.listen(options.port, options.host, function() {
+		console.log('Server listening on port ' + srv.address().port);
+	});
 }
 openServer();

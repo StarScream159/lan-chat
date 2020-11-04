@@ -9,6 +9,17 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
   app.quit();
 }
 
+function setAppDefaults() {
+  if (!appSettings.has('chat.Settings')) {
+    var defaults = {host: '0.0.0.0', port: 27948};
+    appSettings.set('chat.Settings', defaults);
+  }
+  if (!appSettings.has('chat.Scanner')) {
+    var defaults = {concurrency: 1000, timeout: 1000};
+    appSettings.set('chat.Scanner', defaults);
+  }
+}
+
 function windowStateKeeper(windowName) {
   let window, windowState;
   
@@ -128,13 +139,18 @@ const createMainWindow = () => {
       ]
     }
   ]);
-  Menu.setApplicationMenu(menu);
+  //Menu.setApplicationMenu(menu);
 };
+
+const appInit = () => {
+  createMainWindow();
+  setAppDefaults();
+}
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createMainWindow);
+app.on('ready', appInit);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {

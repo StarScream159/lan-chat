@@ -3,25 +3,105 @@
   <head>
     <meta charset="UTF-8">
     <title>LAN Chat</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500|Rokkitt:300,400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/roboto.css">
+
+    <link rel="stylesheet" href="css/reset.min.css">    
+    <link rel='stylesheet' href='css/fontawesome.min.css'>
+    <link rel='stylesheet' href='css/fontawesome.solid.min.css'>
     <link rel="stylesheet" href="css/main.css">
   </head>
+  <script>window.$ = window.jQuery = require('jquery');</script>
   <body>
-    <div class="client-list">
-      <ul>
-        <li>
-          <a href="#">
-            <h3>SUPERCOMPUTER</h3>
-            <span class="address">127.0.0.1</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="messages">
-      <p>fasfdsadf</p>
-    </div>
-    <script src="js/index.js"></script>
 
-    <script src="js/chat.js"></script>
+    <div id="frame">
+      <div id="sidepanel">
+        <div id="profile">
+          <div class="wrap">
+            <div class="avatar online localHost-hostnameShort"><span>lH</span></div>
+            <p><span class="localHost-hostname">Waiting for connection...</span><br><small class="localHost-ip">...</small></p>
+            <div id="status-options">
+              <ul>
+                <li id="status-online" class="active"><span class="status-circle"></span> <p>Online</p></li>
+                <li id="status-away"><span class="status-circle"></span> <p>Away</p></li>
+                <li id="status-busy"><span class="status-circle"></span> <p>Busy</p></li>
+                <li id="status-offline"><span class="status-circle"></span> <p>Offline</p></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div id="contacts">
+          <ul>
+            <!--
+            <li class="contact active">
+              <div class="wrap">
+                <span class="contact-status busy"></span>
+                <img src="https://i.pravatar.cc/300" alt="" />
+                <div class="meta">
+                  <p class="name">Harvey Specter</p>
+                  <p class="preview">192.168.2.14</p>
+                </div>
+              </div>
+            </li>
+            -->
+          </ul>
+        </div>
+        <div id="bottom-bar">
+          <!-- <button id="addcontact"><i class="fas fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button> -->
+          <button id="settings"><i class="fas fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="contact-profile">
+          <img src="https://i.pravatar.cc/300" alt="" />
+          <p>Harvey Specter</p>
+        </div>
+        <div class="messages">
+          <ul>
+            <li class="sent">
+              <img src="https://i.pravatar.cc/300?img=19" alt="" />
+              <p>How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!</p>
+            </li>
+            <li class="replies">
+              <img src="https://i.pravatar.cc/300?img=11" alt="" />
+              <p>When you're backed against the wall, break the god damn thing down.</p>
+            </li>
+            <li class="replies">
+              <img src="https://i.pravatar.cc/300?img=11" alt="" />
+              <p>Excuses don't win championships.</p>
+            </li>
+            <li class="sent">
+              <img src="https://i.pravatar.cc/300?img=19" alt="" />
+              <p>Oh yeah, did Michael Jordan tell you that?</p>
+            </li>
+            <li class="replies">
+              <img src="https://i.pravatar.cc/300?img=11" alt="" />
+              <p>No, I told him that.</p>
+            </li>
+            <li class="replies">
+              <img src="https://i.pravatar.cc/300?img=11" alt="" />
+              <p>What are your choices when someone puts a gun to your head?</p>
+            </li>
+            <li class="sent">
+              <img src="https://i.pravatar.cc/300?img=19" alt="" />
+              <p>What are you talking about? You do what they say or they shoot you.</p>
+            </li>
+            <li class="replies">
+              <img src="https://i.pravatar.cc/300?img=11" alt="" />
+              <p>Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="message-input">
+          <div class="wrap">
+          <input type="text" placeholder="Write your message..." />
+          <button class="submit"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/classes/contact.js"></script>
+    <script src="js/classes/contactList.js"></script>
+    <script src="js/app.js"></script>
   </body>
 </html>
