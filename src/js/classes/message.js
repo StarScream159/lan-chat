@@ -4,6 +4,7 @@ class Message {
 
 		this.sender = remoteAddress;
 		this.payload = data.payload;
+		this.source = data.source;
 		this.message = data.message;
 		this.data = data;	// raw data incase we need it
 	}
@@ -12,26 +13,35 @@ class Message {
 		return JSON.parse(message);
 	}
 
+	senderSelf() {
+		return this.sender === getLocalHost().ip;
+	}
+
 	parseMessage() {
 		var payload = this.payload;
 		switch(payload) {
 			case 'hello':
-				// new client, maybe... check our ContactList and add it if it is new
-				// 1. hash the url
-				// 2. search ContactList for the hash
-				// 3. if found, update status for it - new port maybe?
-				// 4. if not found, add it like the scanner
-
-				var contact = new Contact(this.message.ip, this.message.port, this.message.host, this.message.version, false);
+				var contact = new Contact(this.source.ip, this.source.port, this.source.host, this.source.version, false);
 				var clc = ContactList.findById(contact.id);
 				if (typeof clc !== "undefined") {
 					if (clc.port !== contact.port) {
 						clc.updatePort(contact.port);
 					}
 					clc.updateStatus('online');
+					clc.setupConnection(false);
 				}else{
 					ContactList.addContact(contact);
 				}
+				contact = null; // trashman
+				break;
+
+			case 'msg':
+				// new incoming text message
+				var contact = new Contact(this.source.ip, this.source.port, this.source.host, this.source.version, false);
+				if (typeof clc !== "undefined") {
+					clc.messageAppend(this);
+				}
+				contact = null; // trashman
 				break;
 		}
 	}

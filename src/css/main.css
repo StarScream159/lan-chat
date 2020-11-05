@@ -557,6 +557,20 @@ body {
 #frame .content .messages::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.3);
 }
+#frame .content .messages .no-messages {
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  width: 100%;
+  font-size: 1.25em;
+  opacity: 0.4;
+}
+#frame .content .messages .no-messages i {
+  font-size: 3em;
+  padding-bottom: 0.3em;
+}
 #frame .content .messages ul li {
   display: inline-block;
   clear: both;

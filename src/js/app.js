@@ -146,7 +146,7 @@ function openServer(err, port) {
 
 		// Add a 'close' event handler to this instance of socket
 		sock.on('close', function(data) {
-			//console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
+			console.log('DISCONNECTED: ' + sock.remoteAddress +' '+ sock.remotePort);
 		});
 
 		sock.on('error', function(e) {

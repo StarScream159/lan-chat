@@ -9,6 +9,7 @@ class Contact {
 		this.host = host;
 		this.version = version;
 		this.messages = [];
+		this.unread = 0;
 		this.sock = null;
 		if (autoConnect) {
 			this.setupConnection(true);
@@ -47,16 +48,29 @@ class Contact {
 	}
 	
 	messageSend(message) {
-		sock.write(JSON.stringify({payload: 'msg', message: message}));
+		this.sock.write(JSON.stringify({payload: 'msg', source: getLocalHost(), message: message}));
 	}
 
-	messageGet() {
-		//
+	messageAppend(message) {
+		this.messages.push(message);
+		// if we are active on this contact, append it to the screen
+		// otherwise increase unread count and it'll be loaded on click
+		if ($('*[data-uuid="'+ this.id +'"]').hasClass('active')) {
+			console.log('append to screen');
+		}else{
+			console.log('increase unread');
+			this.unread++;
+			this.updateUnread();
+		}
 	}
 
 	updateStatus(status) {
 		// strings: online, away, busy, offline
 		$('*[data-uuid="'+ this.id +'"]').find('.contact-status').removeClass('online offline away busy').addClass(status);
+	}
+
+	updateUnread() {
+		$('*[data-uuid="'+ this.id +'"]');
 	}
 
 	updatePort(port) {
@@ -71,12 +85,13 @@ class Contact {
 
 		sock.connect(that.port, that.ip, function() {
 			if (notify) {
-				sock.write(JSON.stringify({payload: 'hello', message: getLocalHost()}));
+				sock.write(JSON.stringify({payload: 'hello', source: getLocalHost(), message: ''}));
 			}
 		});
 
 		sock.on('close', function() {
 			that.updateStatus('offline');
+			this.sock.destroy();
 		});
 
 		sock.on('error', function(e) {
@@ -92,7 +107,21 @@ class Contact {
 	}
 
 	loadMessages() {
-		//
+		$('.contact-profile > p').text(this.host);
+		$('.messages > ul').empty();
+		if (this.messages.length === 0) {
+			$('.messages').find('.no-messages').fadeIn();
+		}else{
+			$('.messages').find('.no-messages').fadeOut();
+			var i;
+			for(i=0;i < this.messages.length;$i++) {
+				var html = '<li class="'+ (this.message.senderSelf()?'sent':'reply') +'">';
+				html += '	<img src="https://i.pravatar.cc/300?img=19" alt="" />';
+				html += ' <p>'+message.message+'</p>';
+				html += '</li>';
+				$('.messages > ul').append(html);
+			}
+		}
 	}
 
 }

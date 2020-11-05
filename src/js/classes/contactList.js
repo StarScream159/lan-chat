@@ -17,5 +17,10 @@ class contactList {
 	findById(id) {
 		return this.contacts.find(o => o.id === id);
 	}
+
+	findCurrent() {
+		var curId = $('#contacts .contact.active').data('uuid');
+		return this.findById(curId);
+	}
   
 }
