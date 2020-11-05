@@ -56,9 +56,10 @@ class Contact {
 		// if we are active on this contact, append it to the screen
 		// otherwise increase unread count and it'll be loaded on click
 		if ($('*[data-uuid="'+ this.id +'"]').hasClass('active')) {
-			console.log('append to screen');
+			$('.messages').find('.no-messages').hide();
+			var html = message.messageMarkup();
+			$('.messages > ul').append(html);
 		}else{
-			console.log('increase unread');
 			this.unread++;
 			this.updateUnread();
 		}
@@ -91,7 +92,6 @@ class Contact {
 
 		sock.on('close', function() {
 			that.updateStatus('offline');
-			this.sock.destroy();
 		});
 
 		sock.on('error', function(e) {
@@ -114,11 +114,9 @@ class Contact {
 		}else{
 			$('.messages').find('.no-messages').fadeOut();
 			var i;
-			for(i=0;i < this.messages.length;$i++) {
-				var html = '<li class="'+ (this.message.senderSelf()?'sent':'reply') +'">';
-				html += '	<img src="https://i.pravatar.cc/300?img=19" alt="" />';
-				html += ' <p>'+message.message+'</p>';
-				html += '</li>';
+			for(i=0;i < this.messages.length;i++) {
+				var message = this.messages[i];
+				var html = message.messageMarkup();
 				$('.messages > ul').append(html);
 			}
 		}

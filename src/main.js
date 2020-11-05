@@ -11,7 +11,7 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 
 function setAppDefaults() {
   if (!appSettings.has('chat.Settings')) {
-    var defaults = {host: '0.0.0.0', port: 27900};
+    var defaults = {host: '0.0.0.0', port: 27900, clipBoardLinks: true};
     appSettings.set('chat.Settings', defaults);
   }
   if (!appSettings.has('chat.Scanner')) {

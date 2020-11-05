@@ -1,7 +1,8 @@
 // app binds
 
 // contact list
-$('#contacts').on('click', '.contact', function() {
+$('#contacts').on('click', '.contact:not(.active)', function() {
+	$('.contact-profile').fadeIn('fast');
 	$('#contacts').find('.contact').removeClass('active');
 	$(this).addClass('active');
 	
@@ -11,12 +12,6 @@ $('#contacts').on('click', '.contact', function() {
 });
 
 // messaging
-function newMessageSend() {
-	var clc = ContactList.findCurrent();
-	clc.messageSend($('.message-input input').val());
-	$('.message-input input').val('');
-	clc = null; // trashman
-}
 $('.submit').click(function() {
 	newMessageSend();
 });

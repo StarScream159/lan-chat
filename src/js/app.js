@@ -140,7 +140,12 @@ function openServer(err, port) {
 
 		// Add a 'data' event handler to this instance of socket
 		sock.on('data', function(data) {
-			var message = new Message(data, sock.remoteAddress);
+			var buff = Buffer.from(data);
+			if (Buffer.isBuffer(buff)) {
+				var message = new Message(buff.toString('utf-8'), sock.remoteAddress);
+			}else{
+				var message = new Message(data, sock.remoteAddress);
+			}
 			message.parseMessage();
 		});
 
@@ -166,3 +171,13 @@ portfinder.getPort({
 	port: 27900,    // minimum port
 	stopPort: 27925 // maximum port
 }, openServer);
+
+function newMessageSend() {
+	var message = new Message(JSON.stringify({payload:'msg', source: getLocalHost(), message: $('.message-input input').val()}), getLocalHost().ip);
+	var clc = ContactList.findCurrent();
+	clc.messageSend($('.message-input input').val());
+	clc.messageAppend(message);
+
+	$('.message-input input').val('');
+	clc = null; // trashman
+}
