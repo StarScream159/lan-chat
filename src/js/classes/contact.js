@@ -1,7 +1,7 @@
 var net = require('net');
 
 class Contact {
-  constructor(ip, port, host, version) {
+  constructor(ip, port, host, version, autoConnect) {
 		// [{ip: 192.168.1.2, port: '27948', host: 'Computer1', version: '0.1.0', messages: []}, ...]
 		this.id = this.generateHash(host + ip);
     this.ip = ip;
@@ -10,7 +10,9 @@ class Contact {
 		this.version = version;
 		this.messages = [];
 		this.sock = null;
-		this.setupConnection();
+		if (autoConnect) {
+			this.setupConnection(true);
+		}
 	}
 
 	generateHash(text) {
@@ -57,12 +59,20 @@ class Contact {
 		$('*[data-uuid="'+ this.id +'"]').find('.contact-status').removeClass('online offline away busy').addClass(status);
 	}
 
-	setupConnection() {
+	updatePort(port) {
+		this.disconnectConnection();
+		this.port = port;
+		this.setupConnection(false);
+	}
+
+	setupConnection(notify) {
 		var that = this;
 		var sock = new net.Socket();
 
 		sock.connect(that.port, that.ip, function() {
-			sock.write(JSON.stringify({payload: 'ping', id: that.id, message: ''}));
+			if (notify) {
+				sock.write(JSON.stringify({payload: 'hello', message: getLocalHost()}));
+			}
 		});
 
 		sock.on('close', function() {

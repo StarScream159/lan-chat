@@ -21,8 +21,9 @@ const appSettings  = require('electron-settings');
 var os = require("os");
 var net = require('net');
 var evilscan = require('evilscan');
+var portfinder = require('portfinder');
 
-let localHost = {'id': '', 'hostname': '', 'ip': '', 'hostnameShort': ''};
+let localHost = {'id': '', 'hostname': '', 'ip': '', 'port': 0, 'hostnameShort': ''};
 const ContactList = new contactList();
 
 function getLocalIP() {
@@ -69,11 +70,16 @@ function setLocalHost() {
 }
 setLocalHost();
 
+function getLocalHost() {
+	return {'ip': localHost.ip, 'port': localHost.port, 'host': localHost.hostname, 'version': require('electron').remote.app.getVersion()};
+}
+getLocalHost();
+
 function findOtherClients() {
 	console.log('scanning ' + getLocalCIDR());
 	var options = {
 		target: getLocalCIDR(),
-		port: '27948', // 0-65535 but 27948 default
+		port: '27900-27925', // 0-65535 but 27948 default
 		status:'O', // (T)imeout, (R)efused, (O)pen, (U)nreachable
 		banner: true,
 		concurrency: 1000,
@@ -81,7 +87,7 @@ function findOtherClients() {
 	};
 
 	if (appSettings.has('chat.Scanner')) {
-		options.port = appSettings.get('chat.Settings').port;
+		//options.port = appSettings.get('chat.Settings').port;	// TODO: allow users to set a port in the options
 		options.concurrency = appSettings.get('chat.Scanner').concurrency;
 		options.timeout = appSettings.get('chat.Scanner').timeout;
 	}
@@ -116,15 +122,15 @@ function findOtherClients() {
 }
 findOtherClients();
 
-function openServer() {
+function openServer(err, port) {
 	var options = {
 		host: '0.0.0.0',
-		port: 27948, // 27948
+		port: port,
 	};
 
 	if (appSettings.has('chat.Settings')) {
 		options.host = appSettings.get('chat.Settings').host;
-		options.port = appSettings.get('chat.Settings').port;
+		//options.port = appSettings.get('chat.Settings').port;	// just use a random port that is found each time - TODO: allow users to set a port in the options
 	}
 	
 	var srv = net.createServer(function(sock) {
@@ -134,20 +140,29 @@ function openServer() {
 
 		// Add a 'data' event handler to this instance of socket
 		sock.on('data', function(data) {
-			console.log('DATA ' + sock.remoteAddress + ': ' + data);
-			// Write the data back to the socket, the client will receive it as data from the server
-			sock.write('You said "' + data + '"');
-			$('.messages').append('<p>' + data + '</p>');
+			var message = new Message(data, sock.remoteAddress);
+			message.parseMessage();
 		});
 
 		// Add a 'close' event handler to this instance of socket
 		sock.on('close', function(data) {
-			console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
+			//console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
+		});
+
+		sock.on('error', function(e) {
+			//console.log(e);
 		});
 	
 	});
-	srv.listen(options.port, options.host, function() {
+	srv.listen(options.port, options.host, function() {	// TODO: catch on error if the port is in use
 		console.log('Server listening on port ' + srv.address().port);
+		appSettings.set('chat.Settings.port', srv.address().port);
+		localHost.port = srv.address().port;
 	});
 }
-openServer();
+
+// start us up
+portfinder.getPort({
+	port: 27900,    // minimum port
+	stopPort: 27925 // maximum port
+}, openServer);

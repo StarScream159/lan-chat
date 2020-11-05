@@ -9,9 +9,13 @@ class contactList {
   }
   
   addContact(c){
-		var contact = new Contact(c.ip, c.port, c.host, c.version);
+		var contact = new Contact(c.ip, c.port, c.host, c.version, true);
 		contact.addToInterface();
 		this.contacts.push(contact);
+	}
+
+	findById(id) {
+		return this.contacts.find(o => o.id === id);
 	}
   
 }
