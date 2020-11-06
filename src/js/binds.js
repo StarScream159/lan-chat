@@ -36,7 +36,7 @@ $(window).on('keydown', function(e) {
   }
 });
 
-$('.messages').on('click', 'a', function(evt) {
+$('.messages').on('click', 'a.external', function(evt) {
 	evt.preventDefault();
 	shell.openExternal($(this).attr('href'));
 });

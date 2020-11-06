@@ -93,7 +93,8 @@ const createMainWindow = () => {
     height: mainWindowStateKeeper.height,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    icon: path.join(__dirname, 'img/icons/png/64x64.png')
   };
   // Create the browser window.
   mainWindow = new BrowserWindow(windowOptions);
