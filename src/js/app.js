@@ -17,6 +17,7 @@ app closed
 */
 
 const appSettings  = require('electron-settings');
+const customTitlebar = require('custom-electron-titlebar');
 
 var os = require("os");
 var net = require('net');
@@ -26,6 +27,11 @@ var portfinder = require('portfinder');
 let localHost = {'id': '', 'hostname': '', 'ip': '', 'port': 0};
 let messagingEnabled = true;
 const ContactList = new contactList();
+
+new customTitlebar.Titlebar({
+	backgroundColor: customTitlebar.Color.fromHex('#2C3E50'),
+	overflow: 'hidden'
+});
 
 function getLocalIP() {
 	var ifaces = os.networkInterfaces();

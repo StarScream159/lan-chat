@@ -94,7 +94,9 @@ const createMainWindow = () => {
     webPreferences: {
       nodeIntegration: true
     },
-    icon: path.join(__dirname, 'img/icons/png/64x64.png')
+    icon: path.join(__dirname, 'img/icons/png/64x64.png'),
+    titleBarStyle: 'hidden',
+    frame: false
   };
   // Create the browser window.
   mainWindow = new BrowserWindow(windowOptions);
