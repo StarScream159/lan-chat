@@ -40,3 +40,16 @@ $('.messages').on('click', 'a.external', function(evt) {
 	evt.preventDefault();
 	shell.openExternal($(this).attr('href'));
 });
+
+$('.messages').on('scroll', function() {
+	if ($('.scroll-notification').is(":visible")) {
+		if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+			$('.scroll-notification').fadeOut('fast');
+		}
+	}
+});
+
+$('.scroll-notification').click(function() {
+	$(this).fadeOut();
+	$('.messages').animate({scrollTop: $('.messages')[0].scrollHeight}, 'fast');
+});

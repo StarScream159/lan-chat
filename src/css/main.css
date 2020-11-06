@@ -583,6 +583,20 @@ body {
   font-size: 3em;
   padding-bottom: 0.3em;
 }
+#frame .content .messages .scroll-notification {
+  position: absolute;
+  background: #000;
+  opacity: 0.5;
+  color: #FFF;
+  font-size: 0.75em;
+  padding: 12px;
+  border-radius: 4px;
+  bottom: 46px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  cursor: pointer;
+}
 #frame .content .messages ul li {
   display: inline-block;
   clear: both;
@@ -594,16 +608,15 @@ body {
 #frame .content .messages ul li:nth-last-child(1) {
   margin-bottom: 20px;
 }
-#frame .content .messages ul li.sent img {
+#frame .content .messages ul li.sent .avatar {
   float: right;
   margin: 6px 0 0 8px;
-  
 }
 #frame .content .messages ul li.sent p {
   background: #f5f5f5;
   float: right;
 }
-#frame .content .messages ul li.replies img {
+#frame .content .messages ul li.replies .avatar {
   margin: 6px 8px 0 0;
 }
 #frame .content .messages ul li.replies p {
@@ -613,8 +626,13 @@ body {
 #frame .content .messages ul li.replies p a {
   color: #f5f5f5;
 }
-#frame .content .messages ul li img {
-  width: 22px;
+#frame .content .messages ul li .avatar {
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  font-size: 1.25em;
+  color: #FFF;
   border-radius: 50%;
   float: left;
 }

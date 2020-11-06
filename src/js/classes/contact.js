@@ -36,7 +36,7 @@ class Contact {
 		var html = '<li class="contact" data-uuid="'+ this.id +'">';
 		html += '	<div class="wrap">';
 		html += '		<span class="contact-status online"></span>';
-		html += '		<div class="avatar online" style="background: '+ this.avatar +'"><span>'+ this.host.substring(0,1) +'</span></div>';
+		html += '		<div class="avatar online" style="background: '+ this.avatar +'"><span>'+ this.getInitial() +'</span></div>';
 		//html += '		<img src="https://i.pravatar.cc/300" alt="">';
 		html += '		<div class="meta">';
 		html += '			<p class="name">'+ this.host +'</p>';
@@ -60,9 +60,20 @@ class Contact {
 		// if we are active on this contact, append it to the screen
 		// otherwise increase unread count and it'll be loaded on click
 		if ($('*[data-uuid="'+ this.id +'"]').hasClass('active')) {
+			var scroll = false;	// only scroll if we are already at the bottom
+			if($('.messages').scrollTop() + $('.messages').innerHeight() >= $('.messages')[0].scrollHeight) {
+				scroll = true;
+			}
+
 			$('.messages').find('.no-messages').hide();
 			var html = message.messageMarkup();
 			$('.messages > ul').append(html);
+
+			if (scroll) {
+				$('.messages').animate({scrollTop: $('.messages')[0].scrollHeight}, 'fast');
+			}else{
+				$('.scroll-notification').fadeIn('fast');
+			}
 		}else{
 			this.unread++;
 			this.updateUnread();
@@ -119,7 +130,7 @@ class Contact {
 
 	loadMessages() {
 		$('.contact-profile > p').text(this.host);
-		$('.contact-profile > .avatar').css('background', this.avatar).find('span').text(this.host.substring(0,1));
+		$('.contact-profile > .avatar').css('background', this.avatar).find('span').text(this.getInitial());
 		$('.messages > ul').empty();
 		if (this.messages.length === 0) {
 			$('.messages').find('.no-messages').fadeIn();
@@ -143,6 +154,10 @@ class Contact {
 			this.getRandomColor();
 		}
 		return hex;
+	}
+
+	getInitial() {
+		return this.host.substring(0,1);
 	}
 
 }

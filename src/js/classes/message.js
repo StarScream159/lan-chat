@@ -9,7 +9,7 @@ class Message {
 		this.payload = data.payload;
 		this.source = data.source;
 		this.message = data.message;
-		this.data = data;	// raw data incase we need it
+		this.data = data;	// raw data incase we need it later or something
 	}
 
 	decodeMessage(message) {
@@ -51,6 +51,7 @@ class Message {
 				var contact = new Contact(this.source.ip, this.source.port, this.source.host, this.source.version, false);
 				var clc = ContactList.findById(contact.id);
 				if (clc instanceof Contact) {
+					this.source = clc;
 					clc.messageAppend(this);
 					if (appSettings.has('chat.Settings')) {
 						var chatSettings = appSettings.has('chat.Settings');
@@ -67,9 +68,31 @@ class Message {
 		}
 	}
 
+	getMessageSourceAvatar() {
+		if (this.senderSelf()) {
+			return '#512DA8';
+		}else{
+			if (this.source instanceof Contact) {
+				return this.source.avatar;
+			}
+			return '#000';	// black default?? this should never happen anyways
+		}
+	}
+
+	getMessageSourceInitial() {
+		if (this.senderSelf()) {
+			return localHost.hostname.substring(0,1);
+		}else{
+			if (this.source instanceof Contact) {
+				return this.source.getInitial();
+			}
+			return 'L';
+		}
+	}
+
 	messageMarkup() {
 		var html = '<li class="'+ (this.senderSelf()?'sent':'replies') +'">';
-		html += '	<img src="https://i.pravatar.cc/300?img=19" alt="" />';
+		html += '	<div class="avatar" style="background:'+this.getMessageSourceAvatar()+'"><span>'+this.getMessageSourceInitial()+'</span></div>';
 		html += ' <p>'+Message.makeMarkupLinksClickable(this.message)+'</p>';
 		html += '</li>';
 		return html;
