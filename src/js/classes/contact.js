@@ -1,4 +1,5 @@
 var net = require('net');
+const { runInThisContext } = require('vm');
 
 class Contact {
   constructor(ip, port, host, version, autoConnect) {
@@ -10,6 +11,8 @@ class Contact {
 		this.version = version;
 		this.messages = [];
 		this.unread = 0;
+		this.avatar = this.getRandomColor();
+		this.status = 'online';
 		this.sock = null;
 		if (autoConnect) {
 			this.setupConnection(true);
@@ -33,7 +36,8 @@ class Contact {
 		var html = '<li class="contact" data-uuid="'+ this.id +'">';
 		html += '	<div class="wrap">';
 		html += '		<span class="contact-status online"></span>';
-		html += '		<img src="https://i.pravatar.cc/300" alt="">';
+		html += '		<div class="avatar online" style="background: '+ this.avatar +'"><span>'+ this.host.substring(0,1) +'</span></div>';
+		//html += '		<img src="https://i.pravatar.cc/300" alt="">';
 		html += '		<div class="meta">';
 		html += '			<p class="name">'+ this.host +'</p>';
 		html += '			<p class="preview">'+ this.ip +'</p>';
@@ -67,7 +71,14 @@ class Contact {
 
 	updateStatus(status) {
 		// strings: online, away, busy, offline
+		this.status = status;
 		$('*[data-uuid="'+ this.id +'"]').find('.contact-status').removeClass('online offline away busy').addClass(status);
+		if (status === 'offline' && this.id === ContactList.findCurrent().id) {
+			// disable the message submit
+			disableMessaging('Contact is offline.');
+		}else if(status !== 'offline' && this.id === ContactList.findCurrent().id) {
+			enableMessaging();
+		}
 	}
 
 	updateUnread() {
@@ -108,6 +119,7 @@ class Contact {
 
 	loadMessages() {
 		$('.contact-profile > p').text(this.host);
+		$('.contact-profile > .avatar').css('background', this.avatar).find('span').text(this.host.substring(0,1));
 		$('.messages > ul').empty();
 		if (this.messages.length === 0) {
 			$('.messages').find('.no-messages').fadeIn();
@@ -120,6 +132,17 @@ class Contact {
 				$('.messages > ul').append(html);
 			}
 		}
+	}
+
+	getRandomColor() {
+		var length = 6;
+		var chars = '0123456789ABCDEF';
+		var hex = '#';
+		while(length--) hex += chars[(Math.random() * 16) | 0];
+		while(!ContactList.uniqueColor(hex)) {
+			this.getRandomColor();
+		}
+		return hex;
 	}
 
 }

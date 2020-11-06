@@ -81,8 +81,8 @@ body {
   border-radius: 50%;
   padding: 3px;
   border: 2px solid #e74c3c;
-  background-color: #E6EAEA;
-  color: #2c3e50;
+  background-color: #512DA8;
+  color: #FFF;
   float: left;
   text-align: center;
   line-height: 50px;
@@ -378,7 +378,7 @@ body {
     width: 100%;
   }
 }
-#frame #sidepanel #contacts ul li.contact .wrap span {
+#frame #sidepanel #contacts ul li.contact .wrap span.contact-status {
   position: absolute;
   left: 0;
   margin: -2px 0 0 -2px;
@@ -388,23 +388,29 @@ body {
   border: 2px solid #2c3e50;
   background: #95a5a6;
 }
-#frame #sidepanel #contacts ul li.contact .wrap span.online {
+#frame #sidepanel #contacts ul li.contact .wrap .contact-status.online {
   background: #2ecc71;
 }
-#frame #sidepanel #contacts ul li.contact .wrap span.away {
+#frame #sidepanel #contacts ul li.contact .wrap .contact-status.away {
   background: #f1c40f;
 }
-#frame #sidepanel #contacts ul li.contact .wrap span.busy {
+#frame #sidepanel #contacts ul li.contact .wrap .contact-status.busy {
   background: #e74c3c;
 }
-#frame #sidepanel #contacts ul li.contact .wrap img {
+#frame #sidepanel #contacts ul li.contact .wrap .avatar {
   width: 40px;
+  height: 40px;
   border-radius: 50%;
   float: left;
   margin-right: 10px;
+  text-align: center;
+  line-height: 40px;
+  color: #FFF;
+  font-size: 2em;
+  font-weight: 700;
 }
 @media screen and (max-width: 735px) {
-  #frame #sidepanel #contacts ul li.contact .wrap img {
+  #frame #sidepanel #contacts ul li.contact .wrap .avatar {
     margin-right: 0px;
   }
 }
@@ -517,11 +523,17 @@ body {
   line-height: 60px;
   background: #f5f5f5;
 }
-#frame .content .contact-profile img {
+#frame .content .contact-profile .avatar {
   width: 40px;
   border-radius: 50%;
   float: left;
   margin: 9px 12px 0 9px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  color: #FFF;
+  font-size: 2em;
+  font-weight: 700;
 }
 #frame .content .contact-profile p {
   float: left;
@@ -598,6 +610,9 @@ body {
   background: #435f7a;
   color: #f5f5f5;
 }
+#frame .content .messages ul li.replies p a {
+  color: #f5f5f5;
+}
 #frame .content .messages ul li img {
   width: 22px;
   border-radius: 50%;
@@ -641,6 +656,10 @@ body {
 #frame .content .message-input .wrap input:focus {
   outline: none;
 }
+#frame .content .message-input .wrap input.disabled:hover,
+#frame .content .message-input .wrap input.disabled:focus {
+  cursor: not-allowed;
+}
 #frame .content .message-input .wrap .attachment {
   position: absolute;
   right: 60px;
@@ -676,6 +695,10 @@ body {
 }
 #frame .content .message-input .wrap button:hover {
   background: #435f7a;
+}
+#frame .content .message-input .wrap button.disabled:hover,
+#frame .content .message-input .wrap button.disabled:focus {
+  cursor: not-allowed;
 }
 #frame .content .message-input .wrap button:focus {
   outline: none;

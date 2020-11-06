@@ -34,7 +34,7 @@ class Message {
 			case 'hello':
 				var contact = new Contact(this.source.ip, this.source.port, this.source.host, this.source.version, false);
 				var clc = ContactList.findById(contact.id);
-				if (typeof clc !== "undefined") {
+				if (clc instanceof Contact) { 
 					if (clc.port !== contact.port) {
 						clc.updatePort(contact.port);
 					}
@@ -50,7 +50,7 @@ class Message {
 				// new incoming text message
 				var contact = new Contact(this.source.ip, this.source.port, this.source.host, this.source.version, false);
 				var clc = ContactList.findById(contact.id);
-				if (typeof clc !== "undefined") {
+				if (clc instanceof Contact) {
 					clc.messageAppend(this);
 					if (appSettings.has('chat.Settings')) {
 						var chatSettings = appSettings.has('chat.Settings');
@@ -70,8 +70,13 @@ class Message {
 	messageMarkup() {
 		var html = '<li class="'+ (this.senderSelf()?'sent':'replies') +'">';
 		html += '	<img src="https://i.pravatar.cc/300?img=19" alt="" />';
-		html += ' <p>'+this.message+'</p>';
+		html += ' <p>'+Message.makeMarkupLinksClickable(this.message)+'</p>';
 		html += '</li>';
 		return html;
+	}
+
+	static makeMarkupLinksClickable(html) {
+		var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    return html.replace(exp,"<a href='$1'>$1</a>"); 
 	}
 }

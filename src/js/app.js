@@ -23,7 +23,8 @@ var net = require('net');
 var evilscan = require('evilscan');
 var portfinder = require('portfinder');
 
-let localHost = {'id': '', 'hostname': '', 'ip': '', 'port': 0, 'hostnameShort': ''};
+let localHost = {'id': '', 'hostname': '', 'ip': '', 'port': 0};
+let messagingEnabled = true;
 const ContactList = new contactList();
 
 function getLocalIP() {
@@ -62,11 +63,10 @@ function getLocalCIDR() {
 function setLocalHost() {
 	localHost.hostname = os.hostname();
 	localHost.ip = getLocalIP();
-	localHost.hostnameShort = os.hostname().substring(0,2);
 
 	$(".localHost-hostname").text(localHost.hostname);
 	$(".localHost-ip").text(localHost.ip);
-	$(".localHost-hostnameShort > span").text(localHost.hostnameShort);
+	$(".localHost-hostnameShort > span").text(localHost.hostname.substring(0,1));
 }
 setLocalHost();
 
@@ -175,9 +175,24 @@ portfinder.getPort({
 function newMessageSend() {
 	var message = new Message(JSON.stringify({payload:'msg', source: getLocalHost(), message: $('.message-input input').val()}), getLocalHost().ip);
 	var clc = ContactList.findCurrent();
-	clc.messageSend($('.message-input input').val());
-	clc.messageAppend(message);
+	if (clc instanceof Contact) {
+		clc.messageSend($('.message-input input').val());
+		clc.messageAppend(message);
 
-	$('.message-input input').val('');
+		$('.message-input input').val('');
+	}
 	clc = null; // trashman
+}
+
+function disableMessaging(message) {
+	messagingEnabled = false;
+	$('.message-input input').addClass('disabled').attr('placeholder', message).prop('readonly', true);
+	$('.message-input button').addClass('disabled').prop('disabled', true);
+}
+disableMessaging(); // start us off disabled, since the app starts with no contacts
+
+function enableMessaging() {
+	messagingEnabled = true;
+	$('.message-input input').removeClass('disabled').attr('placeholder', 'Write your message...').prop('readonly', false);
+	$('.message-input button').removeClass('disabled').prop('disabled', false);
 }
