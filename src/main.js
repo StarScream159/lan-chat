@@ -19,7 +19,7 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 
 function setAppDefaults() {
   if (!appSettings.has('chat.Settings')) {
-    var defaults = {host: '0.0.0.0', port: 27900, startWithWindows: true, minimizeToTray: true, startMinimized: false, showTray: true, clipBoardLinks: true, clipBoardNotifications: true};
+    var defaults = {host: '0.0.0.0', port: 27900, startWithWindows: false, minimizeToTray: true, startMinimized: false, showTray: true, clipBoardLinks: true, clipBoardNotifications: true};
     appSettings.set('chat.Settings', defaults);
   }
   if (!appSettings.has('chat.Scanner')) {
