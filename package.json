@@ -27,6 +27,7 @@
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "name": "lan_chat",
+			"owners": "LAN Chat",
 			"setupIcon": "icons/icon.ico",
 			"loadingGif": "icons/installer.gif"
           }

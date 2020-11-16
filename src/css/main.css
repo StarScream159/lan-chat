@@ -657,6 +657,7 @@ body {
   border-radius: 20px;
   max-width: 205px;
   line-height: 130%;
+  word-break: break-word;
 }
 @media screen and (min-width: 735px) {
   #frame .content .messages ul li p {
