@@ -1,5 +1,4 @@
 'use strict';
-
 /*
 
 app starts
@@ -18,7 +17,9 @@ app closed
 
 const appSettings  = require('electron-settings');
 const customTitlebar = require('custom-electron-titlebar');
+const {ipcRenderer} = require('electron');
 
+var MicroModal = require('micromodal');
 var os = require("os");
 var net = require('net');
 var evilscan = require('evilscan');
@@ -30,8 +31,13 @@ const ContactList = new contactList();
 
 new customTitlebar.Titlebar({
 	backgroundColor: customTitlebar.Color.fromHex('#2C3E50'),
-	overflow: 'hidden'
+	overflow: 'hidden',
+	icon: './img/icons/png/16x16.png'
 });
+
+ipcRenderer.on('open-modal', (event, modal) => {
+	MicroModal.show(modal);
+})
 
 function getLocalIP() {
 	var ifaces = os.networkInterfaces();
@@ -162,6 +168,7 @@ function openServer(err, port) {
 
 		sock.on('error', function(e) {
 			//console.log(e);
+			$("#about-modal").find('.listening-server').text('NOT LISTENING');
 		});
 	
 	});
@@ -169,6 +176,7 @@ function openServer(err, port) {
 		console.log('Server listening on port ' + srv.address().port);
 		appSettings.set('chat.Settings.port', srv.address().port);
 		localHost.port = srv.address().port;
+		$("#about-modal").find('.listening-server').text(options.host+':'+srv.address().port);
 	});
 }
 
@@ -177,6 +185,7 @@ portfinder.getPort({
 	port: 27900,    // minimum port
 	stopPort: 27925 // maximum port
 }, openServer);
+MicroModal.init();
 
 function newMessageSend() {
 	var message = new Message(JSON.stringify({payload:'msg', source: getLocalHost(), message: $('.message-input input').val()}), getLocalHost().ip);
@@ -188,6 +197,10 @@ function newMessageSend() {
 		$('.message-input input').val('');
 	}
 	clc = null; // trashman
+}
+
+function openSettingsModal() {
+	MicroModal.show('settings-modal');
 }
 
 function disableMessaging(message) {

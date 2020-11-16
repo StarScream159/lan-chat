@@ -38,6 +38,7 @@ class Contact {
 		html += '		<span class="contact-status online"></span>';
 		html += '		<div class="avatar online" style="background: '+ this.avatar +'"><span>'+ this.getInitial() +'</span></div>';
 		//html += '		<img src="https://i.pravatar.cc/300" alt="">';
+		html += '   <div class="unread"><span>0</span></div>';
 		html += '		<div class="meta">';
 		html += '			<p class="name">'+ this.host +'</p>';
 		html += '			<p class="preview">'+ this.ip +'</p>';
@@ -48,7 +49,21 @@ class Contact {
 	}
 
 	removeFromInterface() {
+		if (this.id === ContactList.findCurrent().id) {
+			$('.messages > ul').empty();
+			$('.messages').find('.no-messages').fadeIn();
+		}
 		$('*[data-uuid="'+ this.id +'"]').remove();
+	}
+
+	removeFromStack() {
+		ContactList.removeById(this);
+	}
+
+	removeContact() {
+		this.disconnectConnection();
+		this.removeFromInterface();
+		this.removeFromStack();
 	}
 	
 	messageSend(message) {
@@ -93,7 +108,12 @@ class Contact {
 	}
 
 	updateUnread() {
-		$('*[data-uuid="'+ this.id +'"]');
+		$('*[data-uuid="'+ this.id +'"]').find('.unread').show().find('span').text(this.unread);
+	}
+
+	clearUnread() {
+		this.unread = 0;
+		$('*[data-uuid="'+ this.id +'"]').find('.unread').hide();
 	}
 
 	updatePort(port) {
@@ -116,6 +136,12 @@ class Contact {
 			that.updateStatus('offline');
 		});
 
+		sock.on('end', function() {
+			console.log('ending');
+			that.updateStatus('offline');
+			that.disconnectConnection();
+		});
+
 		sock.on('error', function(e) {
 			//console.log(e);
 			sock.destroy();
@@ -125,6 +151,7 @@ class Contact {
 	}
 
 	disconnectConnection() {
+		this.sock.end(JSON.stringify({payload: 'goodbye', source: getLocalHost(), message: ''}));
 		this.sock.destroy();
 	}
 
@@ -142,6 +169,7 @@ class Contact {
 				var html = message.messageMarkup();
 				$('.messages > ul').append(html);
 			}
+			this.clearUnread();
 		}
 	}
 

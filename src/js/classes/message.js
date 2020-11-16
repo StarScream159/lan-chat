@@ -26,6 +26,21 @@ class Message {
 
 	pushToClipboard() {
 		clipboard.writeText(this.message);
+		if (appSettings.has('chat.Settings')) {
+			var chatSettings = appSettings.get('chat.Settings');
+			if (chatSettings.clipBoardNotifications) {
+				this.sendSysNotification('Link copied to the clipboard.');
+			}
+		}
+	}
+
+	sendSysNotification(title) {
+		var myNotification = new Notification('LAN Chat', {
+			subtitle: title,
+			body: this.message,
+			icon: './img/icons/png/128x128.png',
+			silent: true,
+		});
 	}
 
 	parseMessage() {
@@ -54,9 +69,8 @@ class Message {
 					this.source = clc;
 					clc.messageAppend(this);
 					if (appSettings.has('chat.Settings')) {
-						var chatSettings = appSettings.has('chat.Settings');
-						var clipBoardLinks = chatSettings.clipBoardLinks;
-						if (clipBoardLinks || 1) { // TODO: add this as a setting so it can be turned off
+						var chatSettings = appSettings.get('chat.Settings');
+						if (chatSettings.clipBoardLinks) {
 							if (this.isLinkOnly()) {
 								this.pushToClipboard();
 							}
@@ -64,6 +78,12 @@ class Message {
 					}
 				}
 				contact = null; // trashman
+				break;
+				
+			case 'goodbye':
+				var contact = new Contact(this.source.ip, this.source.port, this.source.host, this.source.version, false);
+				var clc = ContactList.findById(contact.id);
+				clc.removeContact();
 				break;
 		}
 	}

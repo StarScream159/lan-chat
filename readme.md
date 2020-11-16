@@ -1,1 +1,0 @@
-Icon by Dryicons: https://dryicons.com/icon/flat-instant-message-icon-8851

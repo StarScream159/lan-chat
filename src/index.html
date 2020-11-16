@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/reset.min.css">    
     <link rel='stylesheet' href='css/fontawesome.min.css'>
     <link rel='stylesheet' href='css/fontawesome.solid.min.css'>
+    <link rel="stylesheet" href="css/modal.css">
     <link rel="stylesheet" href="css/main.css">
   </head>
   <script>window.$ = window.jQuery = require('jquery');</script>
@@ -47,13 +48,16 @@
         </div>
         <div id="bottom-bar">
           <!-- <button id="addcontact"><i class="fas fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button> -->
-          <button id="settings"><i class="fas fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
+          <button id="settingsBtn" data-micromodal-trigger="settings-modal"><i class="fas fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
         </div>
       </div>
       <div class="content">
         <div class="contact-profile">
           <div class="avatar"><span>S</span></div>
           <p>Selected Contact</p>
+          <div class="contact-controls">
+            <i class="fas fa-trash fa-fw delete-contact" aria-hidden="true"></i>
+          </div>
         </div>
         <div class="messages">
           <div class="no-messages"><i class="fas fa-comment-slash"></i><br>No messages to display.</div>
@@ -65,6 +69,74 @@
           <input type="text" placeholder="Write your message..." />
           <button class="submit"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal micromodal-slide" id="settings-modal" aria-hidden="true">
+      <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+        <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+          <header class="modal__header">
+            <h2 class="modal__title" id="settings-modal-title">
+              Settings
+            </h2>
+            <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+          </header>
+          <main class="modal__content" id="settings-modal-content">
+            <!--
+              - port control
+              - notification control
+              - clipboard control
+              - minimize to tray control
+            -->
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal micromodal-slide" id="about-modal" aria-hidden="true">
+      <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+        <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
+          <header class="modal__header">
+            <h2 class="modal__title" id="about-modal-title">
+              About
+            </h2>
+            <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+          </header>
+          <main class="modal__content" id="about-modal-content">
+            <img src="img/icons/png/128x128.png" alt="icon" title="LAN Chat">
+            <p>LAN Chat - the simple, serverless, loginless, instant messaging application. Not much more to say. It's pretty simple.</p>
+            <p class="float-right">
+              <em><small>Icon by <a href="https://dryicons.com/icon/flat-instant-message-icon-8851" class="external">Dryicons</a></small></em><br>
+              <em><small>Installer animation by <a href="https://dribbble.com/shots/4149571-Message-Bubble-Loader-After-Effects-Freebie" class="external">Jelio Dimitrov</a></small></em>
+            </p>
+            <p>
+              <small>
+                <strong>Version</strong> <script>document.write(require('electron').remote.app.getVersion());</script><br>
+                <strong>Listening on</strong> <span class="listening-server"></span></script>
+              </small>
+            </p>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal micromodal-slide" id="delete-confirm-modal" aria-hidden="true">
+      <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+        <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
+          <header class="modal__header">
+            <h2 class="modal__title" id="about-modal-title">
+              Remove Contact
+            </h2>
+            <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+          </header>
+          <main class="modal__content" id="about-modal-content">
+            <p>This will remove this contact from your list and you from theirs. You will not be able to message this computer/user and they will not be able to message you. The contact will be re-added if the app is restarted on either computer.</p>
+          </main>
+          <footer class="modal__footer">
+            <button class="modal__btn modal__btn-warning">REMOVE</button>
+            <button class="modal__btn" data-micromodal-close aria-label="Close this dialog window">Cancel</button>
+          </footer>
         </div>
       </div>
     </div>

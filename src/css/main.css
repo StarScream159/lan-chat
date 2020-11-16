@@ -96,6 +96,8 @@ body {
 @media screen and (max-width: 735px) {
   #frame #sidepanel #profile .wrap .avatar {
     width: 40px;
+    height: 40px;
+    line-height: 40px;
     margin-left: 4px;
   }
 }
@@ -323,13 +325,13 @@ body {
   color: #f5f5f5;
 }
 #frame #sidepanel #contacts {
-  height: calc(100% - 147px);
+  height: calc(100% - 110px);
   overflow-y: scroll;
   overflow-x: hidden;
 }
 @media screen and (max-width: 735px) {
   #frame #sidepanel #contacts {
-    height: calc(100% - 149px);
+    height: calc(100% - 90px);
     overflow-y: scroll;
     overflow-x: hidden;
   }
@@ -352,6 +354,7 @@ body {
   padding: 10px 0 15px 0;
   font-size: 0.9em;
   cursor: pointer;
+  border-right: 5px solid #2c3e50;
 }
 @media screen and (max-width: 735px) {
   #frame #sidepanel #contacts ul li.contact {
@@ -446,10 +449,22 @@ body {
   margin: 0 0 0 1px;
   opacity: .5;
 }
+#frame #sidepanel #contacts ul li.contact .wrap .unread { 
+  display: none;
+  float: right;
+  background-color: #435f7a;
+  padding: 8px;
+  border-radius: 8px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+}
 #frame #sidepanel #bottom-bar {
   position: absolute;
   width: 100%;
   bottom: 0;
+  display: none;
 }
 #frame #sidepanel #bottom-bar button {
   float: left;
@@ -504,7 +519,7 @@ body {
   height: 100%;
   overflow: hidden;
   position: relative;
-}
+} 
 @media screen and (max-width: 735px) {
   #frame .content {
     width: calc(100% - 58px);
@@ -538,17 +553,17 @@ body {
 #frame .content .contact-profile p {
   float: left;
 }
-#frame .content .contact-profile .social-media {
+#frame .content .contact-profile .contact-controls {
   float: right;
 }
-#frame .content .contact-profile .social-media i {
+#frame .content .contact-profile .contact-controls i {
   margin-left: 14px;
   cursor: pointer;
 }
-#frame .content .contact-profile .social-media i:nth-last-child(1) {
+#frame .content .contact-profile .contact-controls i:nth-last-child(1) {
   margin-right: 20px;
 }
-#frame .content .contact-profile .social-media i:hover {
+#frame .content .contact-profile .contact-controls i:hover {
   color: #435f7a;
 }
 #frame .content .messages {
@@ -720,4 +735,24 @@ body {
 }
 #frame .content .message-input .wrap button:focus {
   outline: none;
+}
+
+#about-modal-content img {
+  margin: 0 auto;
+  display: block;
+  margin-bottom: 4em;
+}
+#about-modal-content p {
+  line-height: 1em;
+  margin-bottom: 2em;
+}
+#about-modal-content small {
+  font-size: 70%;
+}
+#about-modal-content strong {
+  font-weight: 600;
+}
+
+.float-right {
+  float: right;
 }

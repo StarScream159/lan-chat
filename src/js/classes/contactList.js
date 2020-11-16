@@ -23,6 +23,14 @@ class contactList {
 		return this.findById(curId);
 	}
 
+	removeById(contact) {
+		for(var i = 0; i < this.contacts.length; i++) {
+			if (this.contacts[i].id === contact.id) {
+				this.contacts.splice(i, 1);
+			}
+		}
+	}
+
 	uniqueColor(hex) {
 		var i;
 		for(i=0;i < this.contacts.length;i++) {

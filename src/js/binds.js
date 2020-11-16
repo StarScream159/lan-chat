@@ -1,5 +1,5 @@
 // app binds
-const { shell } = require('electron')
+const { shell } = require('electron');
 
 // contact list
 $('#contacts').on('click', '.contact:not(.active)', function() {
@@ -21,6 +21,22 @@ $('#contacts').on('click', '.contact:not(.active)', function() {
 	clc = null // trashman
 });
 
+// single contact
+$('.contact-controls').find('.delete-contact').click(function(evt) {
+	evt.preventDefault();
+	MicroModal.show('delete-confirm-modal');
+});
+$("#delete-confirm-modal .modal__btn-warning").click(function(evt) {
+	evt.preventDefault();
+	MicroModal.close('delete-confirm-modal');
+
+	$('.contact-profile').fadeOut('fast');
+	disableMessaging();
+
+	var clc = ContactList.findCurrent();
+	clc.removeContact();
+});
+
 // messaging
 $('.submit').click(function() {
 	var message = $('.message-input input').val();
@@ -36,7 +52,7 @@ $(window).on('keydown', function(e) {
   }
 });
 
-$('.messages').on('click', 'a.external', function(evt) {
+$('body').on('click', 'a.external', function(evt) {
 	evt.preventDefault();
 	shell.openExternal($(this).attr('href'));
 });
