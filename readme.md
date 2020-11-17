@@ -1,6 +1,6 @@
 # LAN Chat
 
-![lan chat icon](https://lab.robertmeyer.ca/robert.meyer/lan-chat/-/raw/master/src/img/icons/png/256x256.png)
+![lan chat icon](https://lab.robertmeyer.ca/robert.meyer/lan-chat/-/raw/master/src/img/icons/png/512x512.png)
 
 [![verison 0.1.0](https://img.shields.io/badge/version-0.1.0-lightgray)](https://lab.robertmeyer.ca/robert.meyer/lan-chat/) [![Electron](https://img.shields.io/badge/electron-8.2.5-9feaf9)](https://www.electronjs.org/)  ![Size 108 MB](https://img.shields.io/badge/size-108%20MB-blue)
 
