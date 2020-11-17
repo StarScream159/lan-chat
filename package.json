@@ -13,23 +13,22 @@
   },
   "keywords": [],
   "author": {
-    "name": "Robert",
+    "name": "Lan Chat",
     "email": "me@robertmeyer.ca"
   },
   "license": "MIT",
   "config": {
     "forge": {
       "packagerConfig": {
-		"icon": "icons/icon"
+		"icon": "src/img/icons/icon"
 	  },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "name": "lan_chat",
-			"owners": "LAN Chat",
-			"setupIcon": "icons/icon.ico",
-			"loadingGif": "icons/installer.gif"
+			"setupIcon": "src/img/icons/icon.ico",
+			"loadingGif": "src/img/installer.gif"
           }
         },
         {
