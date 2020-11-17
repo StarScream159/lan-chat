@@ -343,7 +343,7 @@ const setMenuDefault = () => {
           icon: path.join(__dirname, 'img/github.png'),
           click: async () => {
             const { shell } = require('electron');
-            await shell.openExternal('https://electronjs.org');
+            await shell.openExternal('https://lab.robertmeyer.ca/robert.meyer/lan-chat');
           }
         },
         {
