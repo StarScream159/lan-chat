@@ -2,13 +2,13 @@
 
 ![lan chat icon](https://lab.robertmeyer.ca/robert.meyer/lan-chat/-/raw/master/src/img/icons/png/256x256.png)
 
-[![Electron](https://img.shields.io/badge/version-0.1.0-lightgray)](https://lab.robertmeyer.ca/robert.meyer/lan-chat/) [![Electron](https://img.shields.io/badge/electron-8.2.5-9feaf9)](https://www.electronjs.org/)
+[![verison 0.1.0](https://img.shields.io/badge/version-0.1.0-lightgray)](https://lab.robertmeyer.ca/robert.meyer/lan-chat/) [![Electron](https://img.shields.io/badge/electron-8.2.5-9feaf9)](https://www.electronjs.org/)  ![Size 108 MB](https://img.shields.io/badge/size-108%20MB-blue)
 
 A modern server-less, database-less, login-less simple peer-to-peer LAN messaging application. Useful for sending links and other simple messages to other comptuers on the local area network without the need for setting up accounts and logging into a service.
 
 ![screenshot](https://lab.robertmeyer.ca/robert.meyer/lan-chat/-/raw/master/src/img/screenshots/screenshot1.png)
 
-# Featuers
+# Features
 - [x] Cross platform: windows, mac, linux
 - [x] No login required
 - [x] No central server
@@ -19,7 +19,7 @@ A modern server-less, database-less, login-less simple peer-to-peer LAN messagin
 - [x] Open links in external browser
 - [x] Auto copy incoming message links to clipboard
 - [x] Responsive
-- [x] Modern
+- [x] Modern UI
 
 ### Tech
 
@@ -32,27 +32,27 @@ LAN Chat uses a number of open source projects to work properly:
 * [validurl](https://www.npmjs.com/package/valid-url) - Detect if incoming message is a URL and if so copy to clipboard (if enabled)
 * [custom-electron-titlebar](https://www.npmjs.com/package/custom-electron-titlebar) - A modern looking app title bar (Windows)
 * [node-auto-launch](https://www.npmjs.com/package/auto-launch) - Register and launch the application on system login (if enabled)
-* [jQuery] - duh
+* [jQuery](https://jquery.com/) - DOM management and manipulation
 
 ### Installation
 
-You can use the intaller package for your platform, or build from source if you'd like.
+You can use the installer package for your platform, or build from source if you'd like.
 
 ### Development/Building
 
-LAN Chat uses ElectronJS and standard HTML + JS + CSS. Make sure your system has Electron installed, and then pull the repo. into a folder of your choice. Next install all dependencies:
+LAN Chat uses ElectronJS and standard HTML + JS + CSS. Make sure your system has Electron installed, and then pull the repo. into a folder of your choosing. Next install all dependencies:
 
 ```sh
 $ npm install
 ```
 
-With all the dependencies installed you how have the following commands avaiable:
+With all the dependencies installed you now have the following commands avaiable:
 
 #### Running for developement:
 ```sh
 $ npm run start
 ```
-There is no hot-reload, so if you make changes to the source after the application has started you can sometimes use the developer tools to reload the application Window. Or you can break (Ctrl+C / Command+C) the npm command and re-run.
+There is no hot-reload, so if you make changes to the source after the application has started you can sometimes use the developer tools to reload the application Window. Or you can break (Ctrl+C / Command+C twice) the npm command and re-run.
 
 #### Building for release:
 ```sh
@@ -63,8 +63,9 @@ Check the `./out/make/` folder for the installer package, or the `./out/lan-chat
 ## Todos
 
  - Maybe add message history and persistance?
- - Add Night Mode
+ - Add dark theme
  - Incoming message notifications (with setting to disable)
+ - Suggest a feature
 
 License
 ----
