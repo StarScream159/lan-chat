@@ -2,7 +2,7 @@
   "name": "lan-chat",
   "productName": "lan-chat",
   "version": "0.1.0",
-  "description": "A login and datbase free LAN chat and messenger application.",
+  "description": "A login-less LAN chat application.",
   "main": "src/main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -13,18 +13,22 @@
   },
   "keywords": [],
   "author": {
-    "name": "Robert",
+    "name": "Lan Chat",
     "email": "me@robertmeyer.ca"
   },
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+		"icon": "src/img/icons/icon"
+	  },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "lan_chat"
+            "name": "lan_chat",
+			"setupIcon": "src/img/icons/icon.ico",
+			"loadingGif": "src/img/installer.gif"
           }
         },
         {
@@ -45,9 +49,15 @@
     }
   },
   "dependencies": {
+    "auto-launch": "^5.0.5",
+    "custom-electron-titlebar": "^3.2.5",
     "electron-settings": "^3.2.0",
     "electron-squirrel-startup": "^1.0.0",
-    "evilscan": "^1.7.5"
+    "evilscan": "^1.7.5",
+    "jquery": "^3.5.1",
+    "micromodal": "^0.4.6",
+    "portfinder": "^1.0.28",
+    "valid-url": "^1.0.9"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.51",

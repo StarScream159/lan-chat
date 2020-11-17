@@ -16,4 +16,5 @@ app closed
 */
 
 // [{ip: 192.168.1.2, port: '27948', hostname: 'Computer1', version: '0.1.0'}, ...]
+let localHost = {'hostname': '', 'ip': '', 'hostnameShort': ''};
 let clientList = [];

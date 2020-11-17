@@ -1,12 +1,31 @@
-const { app, BrowserWindow, ipcMain, screen, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, Menu, Tray, application } = require('electron');
 const path = require('path');
 const appSettings  = require('electron-settings');
+const AutoLaunch = require('auto-launch');
 
+const isMac = process.platform === 'darwin';
+let menuTemplate;
+let tray;
 let mainWindow = null;
+let isQuiting;
+let lanChatAutoLauncher = new AutoLaunch({
+  name: 'Lan Chat',
+});
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
+}
+
+function setAppDefaults() {
+  if (!appSettings.has('chat.Settings')) {
+    var defaults = {host: '0.0.0.0', port: 27900, startWithWindows: false, minimizeToTray: true, startMinimized: false, showTray: true, clipBoardLinks: true, clipBoardNotifications: true};
+    appSettings.set('chat.Settings', defaults);
+  }
+  if (!appSettings.has('chat.Scanner')) {
+    var defaults = {concurrency: 750, timeout: 500};
+    appSettings.set('chat.Scanner', defaults);
+  }
 }
 
 function windowStateKeeper(windowName) {
@@ -43,8 +62,9 @@ function windowStateKeeper(windowName) {
     windowState = {
       x: undefined,
       y: undefined,
-      width: 1000,
-      height: 800,
+      width: 930,
+      height: 670,
+      useContentSize: true
     };
   }
   function saveState() {
@@ -80,9 +100,15 @@ const createMainWindow = () => {
     y: mainWindowStateKeeper.y,
     width: mainWindowStateKeeper.width,
     height: mainWindowStateKeeper.height,
+    minWidth: 440,
+    minHeight: 600,
+    background: '#E6EAEA',
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    icon: path.join(__dirname, 'img/icons/png/64x64.png'),
+    titleBarStyle: 'hidden',
+    frame: false
   };
   // Create the browser window.
   mainWindow = new BrowserWindow(windowOptions);
@@ -94,47 +120,260 @@ const createMainWindow = () => {
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
-  // set the menu
-  var menu = Menu.buildFromTemplate([
+  // maybe hide the window
+  if (appSettings.get('chat.Settings').startMinimized) {
+    mainWindow.hide();
+  }
+
+  mainWindow.on('minimize',function(event){
+    event.preventDefault();
+    if (appSettings.get('chat.Settings').minimizeToTray) {
+      mainWindow.hide();
+    }
+  });
+  mainWindow.on('close', function (event) {
+    if(!isQuiting){
+      event.preventDefault();
+      mainWindow.hide();
+    }
+    return false;
+  });
+};
+
+const setupTray = () => {
+  tray = new Tray(path.join(__dirname, 'img/icons/png/32x32.png'));
+  tray.setToolTip('LAN Chat');
+  tray.setContextMenu(Menu.buildFromTemplate([
     {
-      label: 'File',
+      label: 'Show', click: function () {
+        mainWindow.show();
+      }
+    },
+    {type:'separator'},
+    {
+      label: 'Quit', click: function () {
+        isQuiting = true;
+        app.quit();
+      }
+    }
+  ]));
+  tray.on('double-click', function() {
+    mainWindow.show();
+  });
+};
+
+const destroyTray = () => {
+  tray.destroy();
+};
+
+const getMenuEnabledStatus = (menuId) => {
+  var chatSettings = appSettings.get('chat.Settings');
+  var ret = true;
+  
+  switch(menuId) {
+    case 'show-tray':
+      if (chatSettings.minimizeToTray) {
+        ret = false;
+      }
+      break;
+    case 'start-minimized':
+      if (!chatSettings.minimizeToTray) {
+        ret = false;
+      }
+      break;
+  }
+
+  return ret;
+};
+
+const getMenuCheckedStatus = (menuId) => {
+  var chatSettings = appSettings.get('chat.Settings');
+  var ret;
+  switch(menuId) {
+    case 'start-up':
+      ret = chatSettings.startWithWindows;
+      break;
+    case 'minimize-tray':
+      ret = chatSettings.minimizeToTray;
+      break;
+    case 'show-tray':
+      ret = chatSettings.showTray;
+      break;
+    case 'start-minimized':
+      ret = chatSettings.startMinimized;
+      break;
+    case 'clipboard-enabled':
+      ret = chatSettings.clipBoardLinks;
+      break;
+    case 'clipboard-notifications':
+      ret = chatSettings.clipBoardNotifications;
+      break;
+  }
+  return ret;
+};
+
+const setMenuDefault = () => {
+  menuTemplate = [
+    {
+      label: 'Chat',
       submenu: [
         {
-          label:'Settings',
-          click() {
-            console.log('open settings');
+          label:'Reload Application', 
+          role:'forceReload',
+        },
+        { type: 'separator' },
+        isMac ? { role: 'close' } : { role: 'quit' }
+      ]
+    },
+    {
+      label: 'Settings',
+      submenu: [
+        {
+          id: 'start-up',
+          label:'Start with windows',
+          type:'checkbox',
+          checked: getMenuCheckedStatus('start-up'),
+          click: (menuItem, browserWindow, event) => {
+            var chatSettings = appSettings.get('chat.Settings');
+            chatSettings.startWithWindows = menuItem.checked;
+            appSettings.set('chat.Settings', chatSettings);
+            menuItem.checked = !menuItem.checked;
+            if (chatSettings.startWithWindows) {
+              lanChatAutoLauncher.enable();
+            }else{
+              lanChatAutoLauncher.disable();
+            }
           }
         },
-        {type:'separator'},
+        { type: 'separator' },
         {
-          label:'Exit', 
-          click() {
-            app.quit();
+          id: 'minimize-tray',
+          label:'Minimize to tray',
+          type:'checkbox',
+          checked: getMenuCheckedStatus('minimize-tray'),
+          click: (menuItem, browserWindow, event) => {
+            var chatSettings = appSettings.get('chat.Settings');
+            chatSettings.minimizeToTray = menuItem.checked;
+            appSettings.set('chat.Settings', chatSettings);
+            menuItem.checked = !menuItem.checked;
+            if (chatSettings.minimizeToTray) {
+              Menu.getApplicationMenu().getMenuItemById('start-minimized').enabled = true;
+              Menu.getApplicationMenu().getMenuItemById('show-tray').enabled = false;
+              Menu.getApplicationMenu().getMenuItemById('show-tray').checked = true;
+              if (!chatSettings.showTray) {
+                setupTray();
+                chatSettings.showTray = true;
+                appSettings.set('chat.Settings', chatSettings);
+              }
+            }else{
+              Menu.getApplicationMenu().getMenuItemById('start-minimized').enabled = false;
+              Menu.getApplicationMenu().getMenuItemById('start-minimized').checked = false;
+              Menu.getApplicationMenu().getMenuItemById('show-tray').enabled = true;
+
+              chatSettings.startMinimized = false;
+              appSettings.set('chat.Settings', chatSettings);
+            }
+          }
+        },
+        {
+          id: 'start-minimized',
+          label:'Start minimized',
+          type:'checkbox',
+          checked: getMenuCheckedStatus('start-minimized'),
+          enabled: getMenuEnabledStatus('start-minimized'),
+          click: (menuItem, browserWindow, event) => {
+            var chatSettings = appSettings.get('chat.Settings');
+            chatSettings.startMinimized = menuItem.checked;
+            appSettings.set('chat.Settings', chatSettings);
+            menuItem.checked = !menuItem.checked;
+          }
+        },
+        {
+          id: 'show-tray',
+          label:'Show tray icon',
+          type:'checkbox',
+          checked: getMenuCheckedStatus('show-tray'),
+          enabled: getMenuEnabledStatus('show-tray'),
+          click: (menuItem, browserWindow, event) => {
+            var chatSettings = appSettings.get('chat.Settings');
+            chatSettings.showTray = menuItem.checked;
+            appSettings.set('chat.Settings', chatSettings);
+            menuItem.checked = !menuItem.checked;
+
+            if (chatSettings.showTray) {
+              setupTray();
+            }else{
+              destroyTray();
+            }
+          }
+        },
+        {
+          id: 'clipboard-enabled',
+          label:'Auto copy links to clipboard',
+          type:'checkbox',
+          checked: getMenuCheckedStatus('clipboard-enabled'),
+          click: (menuItem, browserWindow, event) => {
+            var chatSettings = appSettings.get('chat.Settings');
+            chatSettings.clipBoardLinks = menuItem.checked;
+            appSettings.set('chat.Settings', chatSettings);
+            menuItem.checked = !menuItem.checked;
+          }
+        },
+        {
+          id: 'clipboard-notifications',
+          label:'Display notification on clipboard changes',
+          type:'checkbox',
+          checked: getMenuCheckedStatus('clipboard-notifications'),
+          click: (menuItem, browserWindow, event) => {
+            var chatSettings = appSettings.get('chat.Settings');
+            chatSettings.clipBoardNotifications = menuItem.checked;
+            appSettings.set('chat.Settings', chatSettings);
+            menuItem.checked = !menuItem.checked;
           }
         }
       ]
     },
     {
-      label: 'Help',
+      role: 'help',
       submenu: [
         {
           label: 'Online Documentation',
+          icon: path.join(__dirname, 'img/github.png'),
+          click: async () => {
+            const { shell } = require('electron');
+            await shell.openExternal('https://electronjs.org');
+          }
         },
         {
-          label: 'About'
+          label: 'About',
+          click() {
+            mainWindow.webContents.send('open-modal', 'about-modal');
+          }
         }
       ]
     }
-  ]);
-  Menu.setApplicationMenu(menu);
+  ];
+};
+
+const setApplicationMenu = () => {
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
+};
+
+const appInit = () => {
+  app.setAppUserModelId('lan-chat');
+  setAppDefaults();
+  createMainWindow();
+  setupTray();
+  setMenuDefault();
+  setApplicationMenu();
 };
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createMainWindow);
+app.on('ready', appInit);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -143,6 +382,10 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+app.on('before-quit', function () {
+  isQuiting = true;
 });
 
 app.on('activate', () => {
