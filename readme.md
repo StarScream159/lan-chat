@@ -1,10 +1,10 @@
-# LAN Chat [![verison 0.1.0](https://img.shields.io/badge/version-0.1.0-lightgray)](https://lab.robertmeyer.ca/robert.meyer/lan-chat/) [![Electron](https://img.shields.io/badge/electron-8.2.5-9feaf9)](https://www.electronjs.org/) [![size 108 MB](https://img.shields.io/badge/size-108%20MB-blue)](https://lab.robertmeyer.ca/robert.meyer/lan-chat/)
+# LAN Chat [![verison 0.1.0](https://img.shields.io/badge/version-0.1.0-lightgray)](https://github.com/StarScream159/lan-chat) [![Electron](https://img.shields.io/badge/electron-8.2.5-9feaf9)](https://www.electronjs.org/) [![size 108 MB](https://img.shields.io/badge/size-108%20MB-blue)](https://github.com/StarScream159/lan-chat)
 ----
-![lan chat icon](https://lab.robertmeyer.ca/robert.meyer/lan-chat/-/raw/master/src/img/icons/png/512x512.png)
+![lan chat icon](https://raw.githubusercontent.com/StarScream159/lan-chat/master/src/img/icons/png/512x512.png)
 
 A modern server-less, database-less, login-less simple peer-to-peer LAN messaging application. Useful for sending links and other simple messages to other comptuers on the local area network without the need for setting up accounts and logging into a service.
 
-![screenshot](https://lab.robertmeyer.ca/robert.meyer/lan-chat/-/raw/master/src/img/screenshots/screenshot1.png)
+![screenshot](https://raw.githubusercontent.com/StarScream159/lan-chat/master/src/img/screenshots/screenshot1.png)
 
 # Features
 - [x] Cross platform: windows, mac, linux
@@ -67,7 +67,7 @@ Check the `./out/make/` folder for the installer package, or the `./out/lan-chat
 
 License
 ----
-[MIT](https://lab.robertmeyer.ca/robert.meyer/lan-chat/-/raw/master/LICENSE)
+[MIT](https://github.com/StarScream159/lan-chat/blob/master/LICENSE)
 
 **Credits**
 App Icon by [Dryicons](https://dryicons.com/icon/flat-instant-message-icon-8851)
