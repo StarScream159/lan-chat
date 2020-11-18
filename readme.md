@@ -26,7 +26,7 @@ LAN Chat uses a number of open source projects to work properly:
 * [ElectronJS](https://www.electronjs.org) - Build cross-platform desktop apps with JavaScript, HTML, and CSS 
 * [Electron Settings](https://www.npmjs.com/package/electron-settings) - Stores app settings in json flat-file
 * [evilscan](https://www.npmjs.com/package/evilscan) - Network scanner to scan for other LAN Chat clients
-* [node-portfinder](https://www.npmjs.com/package/portfinder) - Get open open on host OS for listening for incoming communications
+* [node-portfinder](https://www.npmjs.com/package/portfinder) - Get open port on host OS for listening for incoming communications
 * [validurl](https://www.npmjs.com/package/valid-url) - Detect if incoming message is a URL and if so copy to clipboard (if enabled)
 * [custom-electron-titlebar](https://www.npmjs.com/package/custom-electron-titlebar) - A modern looking app title bar (Windows)
 * [node-auto-launch](https://www.npmjs.com/package/auto-launch) - Register and launch the application on system login (if enabled)
